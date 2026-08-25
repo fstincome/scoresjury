@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { buildRanking } from "@/lib/scoring";
 import { useCompetition, useCompetitions } from "@/lib/useCompetition";
 import { InstallButton } from "@/components/InstallButton";
+import { OfflineBadge } from "@/components/OfflineBadge";
 
 
 export const Route = createFileRoute("/")({
@@ -68,6 +69,7 @@ function Index() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <OfflineBadge />
             <InstallButton />
             <Link to="/login">
               <Button variant="secondary" size="lg">
