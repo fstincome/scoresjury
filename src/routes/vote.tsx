@@ -63,6 +63,8 @@ function Vote() {
   const isPresident = session?.role === "jury" && session.isPresident;
   const locked = !!competition?.locked;
 
+  const draftKey = competitionId && juryId ? `draft:${competitionId}:${juryId}` : null;
+
   useEffect(() => {
     if (!juryId) return;
     const next: Record<string, string> = {};
@@ -74,15 +76,31 @@ function Vote() {
         next[key(t.id, c.id)] = s ? String(s.value) : "";
       }
     }
-    setValues((prev) => ({ ...next, ...prev }));
+    const draft = draftKey ? (readCache<Record<string, string>>(draftKey) ?? {}) : {};
+    setValues((prev) => ({ ...next, ...draft, ...prev }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teams, criteria, scores.length, juryId]);
+  }, [teams, criteria, scores.length, juryId, draftKey]);
+
+  // Brouillon conservé localement : la saisie survit à une coupure réseau.
+  useEffect(() => {
+    if (draftKey) writeCache(draftKey, values);
+  }, [draftKey, values]);
 
   const totalOf = (teamId: string) =>
     criteria.reduce((s, c) => {
       const v = parseFloat(values[key(teamId, c.id)] || "0");
       return s + (isNaN(v) ? 0 : Math.min(Math.max(v, 0), Number(c.max_points)));
     }, 0);
+
+  // Synchronise les notes mises en file d'attente dès le retour de la connexion.
+  useEffect(() => {
+    if (!online) return;
+    (async () => {
+      const n = await flushPending();
+      setPendingCount(readPending().length);
+      if (n > 0) toast.success(`${n} note(s) hors connexion synchronisée(s) ✓`);
+    })();
+  }, [online]);
 
   const submit = async () => {
     if (!competitionId || !juryId) return;
@@ -101,12 +119,26 @@ function Vote() {
         };
       }),
     );
+
+    if (!online) {
+      queuePending(payload);
+      setPendingCount(readPending().length);
+      setSaving(false);
+      toast.success("Hors connexion : notes enregistrées, envoi au retour du réseau.");
+      return;
+    }
+
     const { error } = await supabase
       .from("scores")
       .upsert(payload, { onConflict: "jury_id,team_id,criterion_id" });
     setSaving(false);
-    if (error) toast.error("Erreur d'envoi : " + error.message);
-    else toast.success(`Notes envoyées ✓ (${teams.length} équipes)`);
+    if (error) {
+      queuePending(payload);
+      setPendingCount(readPending().length);
+      toast.error("Envoi impossible — notes mises en file d'attente.");
+    } else {
+      toast.success(`Notes envoyées ✓ (${teams.length} équipes)`);
+    }
   };
 
   const toggleLock = async () => {
