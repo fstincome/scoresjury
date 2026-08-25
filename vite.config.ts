@@ -14,6 +14,9 @@ export default defineConfig({
     tailwindcss(),
     tsConfigPaths(),
   ],
+  resolve: {
+    dedupe: ["react", "react-dom", "@tanstack/react-router"],
+  },
   server: {
     host: "::",
     port: 8080,
