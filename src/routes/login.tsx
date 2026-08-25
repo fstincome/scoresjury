@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { loginWithCode } from "@/lib/access";
 import { writeSession } from "@/lib/session";
+import { PreloadOfflineButton } from "@/components/PreloadOfflineButton";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
