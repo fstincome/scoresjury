@@ -65,11 +65,15 @@ function Index() {
                 : "Mise à jour en temps réel selon les notes du jury."}
             </p>
           </div>
-          <Link to="/login">
-            <Button variant="secondary" size="lg">
-              <ClipboardList className="mr-2 h-4 w-4" /> Espace jury / admin
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <InstallButton />
+            <Link to="/login">
+              <Button variant="secondary" size="lg">
+                <ClipboardList className="mr-2 h-4 w-4" /> Espace jury / admin
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </header>
 
