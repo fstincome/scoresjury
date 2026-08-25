@@ -3,7 +3,10 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "@tanstack/react-router";
 
 import { getRouter } from "./router";
+import { registerServiceWorker } from "./lib/registerServiceWorker";
 import "./styles.css";
+
+registerServiceWorker();
 
 const router = getRouter();
 
