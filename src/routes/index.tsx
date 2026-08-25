@@ -55,6 +55,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster richColors />
       <header className="border-b bg-gradient-to-br from-primary to-[color:var(--primary-glow)] text-primary-foreground">
         <div className="mx-auto flex max-w-5xl flex-col gap-4 px-6 py-8 md:flex-row md:items-end md:justify-between">
           <div>
