@@ -1,17 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Competition, Criterion, Jury, Score, Team } from "@/lib/scoring";
+import { readCache, writeCache } from "@/lib/offline-cache";
 
 export function useCompetitions() {
-  const [competitions, setCompetitions] = useState<Competition[]>([]);
+  const [competitions, setCompetitions] = useState<Competition[]>(
+    () => readCache<Competition[]>("competitions") ?? [],
+  );
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("competitions")
       .select("id, name, locked, created_at")
       .order("created_at", { ascending: false });
-    setCompetitions((data ?? []) as Competition[]);
+    if (!error && data) {
+      setCompetitions(data as Competition[]);
+      writeCache("competitions", data);
+    }
     setLoading(false);
   }, []);
 
@@ -33,22 +39,36 @@ export function useCompetitions() {
   return { competitions, loading, reload: load };
 }
 
+type Snapshot = {
+  competition: Competition | null;
+  criteria: Criterion[];
+  teams: Team[];
+  juries: Jury[];
+  scores: Score[];
+};
+
+const empty: Snapshot = {
+  competition: null,
+  criteria: [],
+  teams: [],
+  juries: [],
+  scores: [],
+};
+
 export function useCompetition(competitionId: string | null) {
-  const [competition, setCompetition] = useState<Competition | null>(null);
-  const [criteria, setCriteria] = useState<Criterion[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [juries, setJuries] = useState<Jury[]>([]);
-  const [scores, setScores] = useState<Score[]>([]);
+  const [snap, setSnap] = useState<Snapshot>(() =>
+    competitionId ? (readCache<Snapshot>(`competition:${competitionId}`) ?? empty) : empty,
+  );
 
   const load = useCallback(async () => {
     if (!competitionId) {
-      setCompetition(null);
-      setCriteria([]);
-      setTeams([]);
-      setJuries([]);
-      setScores([]);
+      setSnap(empty);
       return;
     }
+    // Affiche immédiatement le dernier état connu (utile hors connexion).
+    const cached = readCache<Snapshot>(`competition:${competitionId}`);
+    if (cached) setSnap(cached);
+
     const [comp, crit, tms, jrs, scs] = await Promise.all([
       supabase
         .from("competitions")
@@ -75,11 +95,19 @@ export function useCompetition(competitionId: string | null) {
         .select("id, competition_id, jury_id, team_id, criterion_id, value")
         .eq("competition_id", competitionId),
     ]);
-    setCompetition((comp.data ?? null) as Competition | null);
-    setCriteria((crit.data ?? []) as Criterion[]);
-    setTeams((tms.data ?? []) as Team[]);
-    setJuries((jrs.data ?? []) as Jury[]);
-    setScores((scs.data ?? []) as Score[]);
+
+    // Réseau indisponible : on garde le cache déjà affiché.
+    if (comp.error || crit.error || tms.error || jrs.error || scs.error) return;
+
+    const next: Snapshot = {
+      competition: (comp.data ?? null) as Competition | null,
+      criteria: (crit.data ?? []) as Criterion[],
+      teams: (tms.data ?? []) as Team[],
+      juries: (jrs.data ?? []) as Jury[],
+      scores: (scs.data ?? []) as Score[],
+    };
+    setSnap(next);
+    writeCache(`competition:${competitionId}`, next);
   }, [competitionId]);
 
   useEffect(() => {
@@ -95,5 +123,5 @@ export function useCompetition(competitionId: string | null) {
     };
   }, [competitionId, load]);
 
-  return { competition, criteria, teams, juries, scores, reload: load };
+  return { ...snap, reload: load };
 }
