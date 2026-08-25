@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { buildRanking } from "@/lib/scoring";
 import { useCompetition, useCompetitions } from "@/lib/useCompetition";
+import { InstallButton } from "@/components/InstallButton";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
