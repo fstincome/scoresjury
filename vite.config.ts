@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 // Pure client-side SPA build: `vite build` emits a fully static site in dist/
 // (index.html + assets) that can be uploaded as-is to any static host (cPanel).
