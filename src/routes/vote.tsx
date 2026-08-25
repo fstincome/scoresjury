@@ -210,6 +210,12 @@ function Vote() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <OfflineBadge />
+            {pendingCount > 0 && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium">
+                {pendingCount} note(s) en attente d'envoi
+              </span>
+            )}
             {locked && (
               <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium">
                 <Lock className="h-3 w-3" /> Clôturé
