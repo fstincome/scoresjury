@@ -1,63 +1,30 @@
 import { useEffect, useState } from "react";
 import { Download, X, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-type BIPEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> };
+import { useInstallPrompt } from "@/lib/useInstallPrompt";
 
 const DISMISS_KEY = "juryscore-install-dismissed";
 
 export function InstallPrompt() {
-  const [deferred, setDeferred] = useState<BIPEvent | null>(null);
-  const [open, setOpen] = useState(false);
-  const [iosHint, setIosHint] = useState(false);
+  const { canPrompt, installed, platform, promptInstall } = useInstallPrompt();
+  const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (localStorage.getItem(DISMISS_KEY) === "1") return;
-
-    const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      // @ts-expect-error iOS Safari
-      window.navigator.standalone === true;
-    if (standalone) return;
-
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BIPEvent);
-      setOpen(true);
-    };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-
-    const ua = window.navigator.userAgent;
-    const isIos = /iPad|iPhone|iPod/.test(ua);
-    if (isIos) {
-      const t = setTimeout(() => {
-        setIosHint(true);
-        setOpen(true);
-      }, 1500);
-      return () => {
-        clearTimeout(t);
-        window.removeEventListener("beforeinstallprompt", onPrompt);
-      };
-    }
-
-    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
+    setDismissed(localStorage.getItem(DISMISS_KEY) === "1");
   }, []);
 
-  if (!open) return null;
+  const iosHint = platform === "ios" && !canPrompt;
+  const visible = !installed && !dismissed && (canPrompt || iosHint);
+  if (!visible) return null;
 
   const dismiss = () => {
     localStorage.setItem(DISMISS_KEY, "1");
-    setOpen(false);
+    setDismissed(true);
   };
 
   const install = async () => {
-    if (!deferred) return;
-    await deferred.prompt();
-    await deferred.userChoice;
-    setDeferred(null);
-    setOpen(false);
-    localStorage.setItem(DISMISS_KEY, "1");
+    await promptInstall();
+    dismiss();
   };
 
   return (

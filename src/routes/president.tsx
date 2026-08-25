@@ -119,13 +119,13 @@ function PresidentPage() {
 
   const createCompetition = async () => {
     const name = newComp.trim();
-    if (!name || !myId) return toast.error("Nom de la compétition requis.");
+    if (!name || !myId) { toast.error("Nom de la compétition requis."); return; }
     const { data, error } = await supabase
       .from("competitions")
       .insert({ name, owner_jury_id: myId })
       .select("id")
       .maybeSingle();
-    if (error || !data) return toast.error("Erreur : " + (error?.message ?? ""));
+    if (error || !data) { toast.error("Erreur : " + (error?.message ?? "")); return; }
     await supabase.from("criteria").insert(
       DEFAULT_CRITERIA.map((c, i) => ({
         competition_id: data.id,
@@ -181,7 +181,7 @@ function PresidentPage() {
       .from("competitions")
       .update({ locked: next })
       .eq("id", competition.id);
-    if (error) return toast.error("Erreur : " + error.message);
+    if (error) { toast.error("Erreur : " + error.message); return; }
     toast.success(next ? "Compétition clôturée 🏆" : "Modifications rouvertes");
   };
 
@@ -190,48 +190,48 @@ function PresidentPage() {
     const label = newCrit.label.trim();
     const max = parseFloat(newCrit.max);
     if (!label || isNaN(max) || max <= 0)
-      return toast.error("Libellé et points requis.");
+      { toast.error("Libellé et points requis."); return; }
     const { error } = await supabase.from("criteria").insert({
       competition_id: competitionId,
       label,
       max_points: max,
       position: criteria.length,
     });
-    if (error) return toast.error("Erreur : " + error.message);
+    if (error) { toast.error("Erreur : " + error.message); return; }
     setNewCrit({ label: "", max: "10" });
   };
 
   const addTeam = async () => {
     if (!competitionId) return;
     const name = newTeam.trim();
-    if (!name) return toast.error("Nom d'équipe requis.");
+    if (!name) { toast.error("Nom d'équipe requis."); return; }
     const nextNum = teams.reduce((m, t) => Math.max(m, t.project_number), 0) + 1;
     const { error } = await supabase
       .from("teams")
       .insert({ competition_id: competitionId, project_number: nextNum, name });
-    if (error) return toast.error("Erreur : " + error.message);
+    if (error) { toast.error("Erreur : " + error.message); return; }
     setNewTeam("");
   };
 
   const addJury = async () => {
     if (!competitionId || !myCode) return;
     const name = newJury.name.trim();
-    if (!name) return toast.error("Nom du juré requis.");
+    if (!name) { toast.error("Nom du juré requis."); return; }
     if (!/^\d{3,8}$/.test(newJury.code.trim()))
-      return toast.error("Code : 3 à 8 chiffres.");
+      { toast.error("Code : 3 à 8 chiffres."); return; }
     const { data, error } = await supabase
       .from("juries")
       .insert({ competition_id: competitionId, name, is_president: false })
       .select("id")
       .maybeSingle();
-    if (error || !data) return toast.error("Erreur : " + (error?.message ?? ""));
+    if (error || !data) { toast.error("Erreur : " + (error?.message ?? "")); return; }
     try {
       await setJuryCode({
         data: { code: myCode, juryId: data.id, juryCode: newJury.code.trim() },
       });
     } catch (e) {
       await supabase.from("juries").delete().eq("id", data.id);
-      return toast.error((e as Error).message);
+      { toast.error((e as Error).message); return; }
     }
     setNewJury({ name: "", code: "" });
     refreshCodes();

@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { buildRanking } from "@/lib/scoring";
 import { useCompetition, useCompetitions } from "@/lib/useCompetition";
+import { InstallButton } from "@/components/InstallButton";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,7 +33,7 @@ function Index() {
   const { competitions } = useCompetitions();
   const [selected, setSelected] = useState<string | null>(null);
   useEffect(() => {
-    if (!selected && competitions.length) setSelected(competitions[0].id);
+    if (!selected && competitions[0]) setSelected(competitions[0].id);
   }, [competitions, selected]);
 
   const { competition, criteria, teams, juries, scores } = useCompetition(selected);
@@ -65,11 +67,15 @@ function Index() {
                 : "Mise à jour en temps réel selon les notes du jury."}
             </p>
           </div>
-          <Link to="/login">
-            <Button variant="secondary" size="lg">
-              <ClipboardList className="mr-2 h-4 w-4" /> Espace jury / admin
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <InstallButton />
+            <Link to="/login">
+              <Button variant="secondary" size="lg">
+                <ClipboardList className="mr-2 h-4 w-4" /> Espace jury / admin
+              </Button>
+            </Link>
+          </div>
+
         </div>
       </header>
 
