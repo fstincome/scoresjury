@@ -12,7 +12,7 @@ import {
   deletePresident,
   listPresidents,
   setPresidentCode,
-} from "@/lib/access.functions";
+} from "@/lib/access";
 import { clearSession, readSession } from "@/lib/session";
 
 export const Route = createFileRoute("/admin")({

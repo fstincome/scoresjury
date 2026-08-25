@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { DEFAULT_CRITERIA, totalMax } from "@/lib/scoring";
 import { useCompetition } from "@/lib/useCompetition";
-import { listJuryCodes, setJuryCode } from "@/lib/access.functions";
+import { listJuryCodes, setJuryCode } from "@/lib/access";
 import {
   clearSession,
   readSession,
