@@ -72,6 +72,7 @@ function Index() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <OfflineBadge />
+            <PreloadOfflineButton variant="outline" />
             <InstallButton />
             <Link to="/login">
               <Button variant="secondary" size="lg">
