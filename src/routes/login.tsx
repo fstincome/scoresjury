@@ -96,6 +96,13 @@ function LoginPage() {
             {busy ? "Vérification..." : "Entrer"}
           </Button>
         </form>
+        <div className="mt-6 border-t pt-4">
+          <p className="mb-2 text-xs text-muted-foreground">
+            Préparez la session : téléchargez le classement et l'écran de vote pour y accéder
+            même sans connexion.
+          </p>
+          <PreloadOfflineButton variant="outline" size="default" />
+        </div>
       </Card>
     </div>
   );
