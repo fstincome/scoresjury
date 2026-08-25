@@ -63,6 +63,10 @@
 
 :root {
   --radius: 0.625rem;
+  --primary-glow: oklch(0.45 0.18 265);
+  --gold: oklch(0.78 0.16 85);
+  --silver: oklch(0.78 0.02 250);
+  --bronze: oklch(0.62 0.12 50);
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);

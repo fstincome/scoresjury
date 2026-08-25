@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { InstallPrompt } from "../components/InstallPrompt";
 
 function NotFoundComponent() {
   return (
@@ -77,21 +78,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "JuryScore — Notation du jury & classement live" },
+      { name: "description", content: "JuryScore collecte les notes du jury et calcule le classement des équipes en temps réel." },
+      { name: "theme-color", content: "#0b1120" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "JuryScore" },
+      { property: "og:title", content: "JuryScore — Notation du jury & classement live" },
+      { property: "og:description", content: "JuryScore collecte les notes du jury et calcule le classement des équipes en temps réel." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "JuryScore — Notation du jury & classement live" },
+      { name: "twitter:description", content: "JuryScore collecte les notes du jury et calcule le classement des équipes en temps réel." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/25b1cf1c-2b86-409a-8750-a5f1300a685a/id-preview-ced2856c--cd5d62bb-0e37-4fa4-9fc4-98c55d3719d3.lovable.app-1780763691906.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/25b1cf1c-2b86-409a-8750-a5f1300a685a/id-preview-ced2856c--cd5d62bb-0e37-4fa4-9fc4-98c55d3719d3.lovable.app-1780763691906.png" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
@@ -121,6 +129,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <InstallPrompt />
     </QueryClientProvider>
   );
 }
