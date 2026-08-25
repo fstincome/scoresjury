@@ -1,0 +1,29 @@
+# JuryScore — application statique (SPA) pour cPanel / Apache
+# Toutes les routes (/login, /vote, /admin, /president) sont gérées côté navigateur :
+# on renvoie index.html pour tout chemin qui n'est pas un fichier existant.
+
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Ne pas réécrire les fichiers et dossiers réels (assets, images, manifest...)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ index.html [L]
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# Cache : assets fingerprintés = long cache, index.html = jamais mis en cache
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2|png|jpg|jpeg|svg|webp|ico)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "^(index\.html|manifest\.webmanifest)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
