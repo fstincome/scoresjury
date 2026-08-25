@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { loginWithCode } from "@/lib/access";
 import { writeSession } from "@/lib/session";
+import { PreloadOfflineButton } from "@/components/PreloadOfflineButton";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -96,6 +97,13 @@ function LoginPage() {
             {busy ? "Vérification..." : "Entrer"}
           </Button>
         </form>
+        <div className="mt-6 border-t pt-4">
+          <p className="mb-2 text-xs text-muted-foreground">
+            Préparez la session : téléchargez le classement et l'écran de vote pour y accéder
+            même sans connexion.
+          </p>
+          <PreloadOfflineButton variant="outline" size="default" />
+        </div>
       </Card>
     </div>
   );
