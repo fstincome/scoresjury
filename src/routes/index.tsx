@@ -7,6 +7,8 @@ import { buildRanking } from "@/lib/scoring";
 import { useCompetition, useCompetitions } from "@/lib/useCompetition";
 import { InstallButton } from "@/components/InstallButton";
 import { OfflineBadge } from "@/components/OfflineBadge";
+import { PreloadOfflineButton } from "@/components/PreloadOfflineButton";
+import { Toaster } from "@/components/ui/sonner";
 
 
 export const Route = createFileRoute("/")({
