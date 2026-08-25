@@ -80,7 +80,7 @@ function Vote() {
 
   const submit = async () => {
     if (!competitionId || !juryId) return;
-    if (locked) return toast.error("Compétition clôturée par le Président.");
+    if (locked) { toast.error("Compétition clôturée par le Président."); return; }
     setSaving(true);
     const payload = teams.flatMap((t) =>
       criteria.map((c) => {
@@ -110,7 +110,7 @@ function Vote() {
       .from("competitions")
       .update({ locked: next })
       .eq("id", competitionId);
-    if (error) return toast.error("Erreur : " + error.message);
+    if (error) { toast.error("Erreur : " + error.message); return; }
     toast.success(next ? "Compétition clôturée 🏆" : "Modifications rouvertes");
   };
 
