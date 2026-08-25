@@ -10,6 +10,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { totalMax } from "@/lib/scoring";
 import { useCompetition } from "@/lib/useCompetition";
 import { clearSession, readSession, type AppSession } from "@/lib/session";
+import { OfflineBadge } from "@/components/OfflineBadge";
+import { useOnlineStatus } from "@/lib/useOnlineStatus";
+import { flushPending, queuePending, readPending } from "@/lib/pendingScores";
+import { readCache, writeCache } from "@/lib/offline-cache";
 
 export const Route = createFileRoute("/vote")({
   head: () => ({
@@ -52,6 +56,8 @@ function Vote() {
 
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const online = useOnlineStatus();
+  const [pendingCount, setPendingCount] = useState(() => readPending().length);
 
   const juryId = session?.role === "jury" ? session.juryId : "";
   const isPresident = session?.role === "jury" && session.isPresident;
