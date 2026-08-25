@@ -33,7 +33,7 @@ function Index() {
   const { competitions } = useCompetitions();
   const [selected, setSelected] = useState<string | null>(null);
   useEffect(() => {
-    if (!selected && competitions.length) setSelected(competitions[0].id);
+    if (!selected && competitions[0]) setSelected(competitions[0].id);
   }, [competitions, selected]);
 
   const { competition, criteria, teams, juries, scores } = useCompetition(selected);
