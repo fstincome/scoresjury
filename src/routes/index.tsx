@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Award, ClipboardList, Lock, Medal, Trophy } from "lucide-react";
+import { Award, ClipboardList, HardDrive, Lock, Medal, Trophy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { buildRanking } from "@/lib/scoring";
@@ -75,6 +75,11 @@ function Index() {
             <OfflineBadge />
             <PreloadOfflineButton variant="outline" />
             <InstallButton />
+            <Link to="/cache">
+              <Button variant="outline" size="lg">
+                <HardDrive className="mr-2 h-4 w-4" /> Gestion du cache
+              </Button>
+            </Link>
             <Link to="/login">
               <Button variant="secondary" size="lg">
                 <ClipboardList className="mr-2 h-4 w-4" /> Espace jury / admin
