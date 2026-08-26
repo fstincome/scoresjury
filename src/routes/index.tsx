@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Award, ClipboardList, Lock, Medal, Trophy } from "lucide-react";
+import { Award, ClipboardList, HardDrive, Lock, Medal, Trophy } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { buildRanking } from "@/lib/scoring";
