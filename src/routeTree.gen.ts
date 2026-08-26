@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CacheRouteImport } from './routes/cache'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PresidentRouteImport } from './routes/president'
 import { Route as VoteRouteImport } from './routes/vote'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CacheRoute = CacheRouteImport.update({
+  id: '/cache',
+  path: '/cache',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -44,6 +50,7 @@ const VoteRoute = VoteRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cache': typeof CacheRoute
   '/login': typeof LoginRoute
   '/president': typeof PresidentRoute
   '/vote': typeof VoteRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cache': typeof CacheRoute
   '/login': typeof LoginRoute
   '/president': typeof PresidentRoute
   '/vote': typeof VoteRoute
@@ -59,21 +67,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/cache': typeof CacheRoute
   '/login': typeof LoginRoute
   '/president': typeof PresidentRoute
   '/vote': typeof VoteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/login' | '/president' | '/vote'
+  fullPaths: '/' | '/admin' | '/cache' | '/login' | '/president' | '/vote'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/login' | '/president' | '/vote'
-  id: '__root__' | '/' | '/admin' | '/login' | '/president' | '/vote'
+  to: '/' | '/admin' | '/cache' | '/login' | '/president' | '/vote'
+  id: '__root__' | '/' | '/admin' | '/cache' | '/login' | '/president' | '/vote'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  CacheRoute: typeof CacheRoute
   LoginRoute: typeof LoginRoute
   PresidentRoute: typeof PresidentRoute
   VoteRoute: typeof VoteRoute
@@ -93,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cache': {
+      id: '/cache'
+      path: '/cache'
+      fullPath: '/cache'
+      preLoaderRoute: typeof CacheRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -122,6 +139,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  CacheRoute: CacheRoute,
   LoginRoute: LoginRoute,
   PresidentRoute: PresidentRoute,
   VoteRoute: VoteRoute,

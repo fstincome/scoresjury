@@ -34,7 +34,7 @@ export const Route = createFileRoute("/cache")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: CachePage;
+  component: CachePage,
 });
 
 const ICONS: Record<CacheGroupId, typeof Database> = {
